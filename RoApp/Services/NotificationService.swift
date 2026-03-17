@@ -6,6 +6,10 @@ final class NotificationService: Sendable {
     static let shared = NotificationService()
     private init() {}
 
+    private var timerNotificationIdentifiers: [String] {
+        TimerMode.allCases.map { "ro.timer.\($0.rawValue)" }
+    }
+
     func requestAuthorization() async -> Bool {
         do {
             return try await UNUserNotificationCenter.current()
@@ -42,7 +46,8 @@ final class NotificationService: Sendable {
     }
 
     func cancelAll() {
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(withIdentifiers: timerNotificationIdentifiers)
     }
 
     func cancelCompletion(for mode: TimerMode) {

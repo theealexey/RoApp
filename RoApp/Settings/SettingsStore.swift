@@ -98,8 +98,12 @@ final class SettingsStore: SettingsStoreProtocol {
         ])
     }
 
-    private func clampedMinutes(forKey key: String, fallback _: Int) -> Int {
-        clamp(minutes: userDefaults.integer(forKey: key))
+    private func clampedMinutes(forKey key: String, fallback: Int) -> Int {
+        guard userDefaults.object(forKey: key) != nil else {
+            return clamp(minutes: fallback)
+        }
+
+        return clamp(minutes: userDefaults.integer(forKey: key))
     }
 
     private func clamp(minutes: Int) -> Int {

@@ -12,7 +12,15 @@ final class StatisticsViewModel {
     private(set) var recentSessions: [FocusSession] = []
 
     func load(repository: SessionRepositoryProtocol) {
-        guard let all = try? repository.fetchAll() else { return }
+        guard let all = try? repository.fetchAll() else {
+            todayMinutes = 0
+            todaySessions = 0
+            currentStreak = 0
+            longestStreak = 0
+            weekBars = []
+            recentSessions = []
+            return
+        }
 
         let focus = all.filter { $0.mode == .focus }
         let todayStart = Calendar.current.startOfDay(for: Date())
