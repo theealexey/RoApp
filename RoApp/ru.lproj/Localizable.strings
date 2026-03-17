@@ -1,0 +1,101 @@
+// MARK: - Timer Modes
+"mode.focus" = "Фокус";
+"mode.short" = "Перерыв";
+"mode.long"  = "Длинный";
+
+// MARK: - Onboarding
+"onboarding.title.0" = "добро пожаловать в ro";
+"onboarding.body.0"  = "Минимальный таймер фокуса.\nБез шума. Только работа.";
+
+"onboarding.title.1" = "таймер помодоро";
+"onboarding.body.1"  = "25 минут фокуса,\n5 минут отдыха.\nПроверенный метод работы.";
+
+"onboarding.title.2" = "виджеты везде";
+"onboarding.body.2"  = "Экран блокировки, Dynamic Island,\nStandBy — таймер всегда рядом.";
+
+"onboarding.title.3" = "отслеживай прогресс";
+"onboarding.body.3"  = "Серии дней, графики по неделям,\nистория сессий.";
+
+"onboarding.next"  = "далее";
+"onboarding.start" = "начать";
+
+// MARK: - Settings
+"settings.title"         = "настройки";
+"settings.durations"     = "длительность";
+"settings.preferences"   = "параметры";
+"settings.about"         = "о приложении";
+"settings.haptics"       = "вибрация";
+"settings.notifications" = "уведомления";
+"settings.autoBreak"     = "авто-перерыв";
+"settings.version"       = "версия";
+"settings.build"         = "сборка";
+
+// MARK: - Statistics
+"stats.title"       = "статистика";
+"stats.today"       = "сегодня";
+"stats.minutes"     = "мин";
+"stats.sessions"    = "сессий";
+"stats.week"        = "7 дней";
+"stats.streak"      = "серия";
+"stats.record"      = "рекорд";
+"stats.days"        = "дней";
+"stats.recent"      = "последние сессии";
+"stats.empty"       = "пока нет сессий";
+
+// MARK: - Notifications
+"notif.focus.title"  = "Сессия завершена 完了";
+"notif.focus.body"   = "Время отдохнуть. Ты справился.";
+"notif.short.title"  = "Перерыв окончен";
+"notif.short.body"   = "Готов к следующей сессии?";
+"notif.long.title"   = "Длинный перерыв окончен";
+"notif.long.body"    = "Заряжен и готов к работе.";
+
+// MARK: - Settings Pro Banner
+"settings.pro.title"    = "ro pro";
+"settings.pro.subtitle" = "Статистика, виджеты, премиум-качество";
+
+// MARK: - Paywall
+"paywall.title"    = "ro pro";
+"paywall.subtitle" = "Полный доступ ко всем функциям.";
+"paywall.monthly"  = "Месяц";
+"paywall.annual"   = "Год";
+"paywall.badge.save"      = "−40%";
+"paywall.badge.bestValue" = "ЛУЧШЕЕ";
+"paywall.badge.flexible"  = "ГИБКИЙ";
+"paywall.cta"      = "Продолжить";
+"paywall.restore"  = "Восстановить покупки";
+"paywall.close"    = "Закрыть";
+"paywall.terms"    = "Подписка продлевается автоматически.";
+"paywall.bestValue"          = "Лучшая цена за период.";
+"paywall.pro.active"         = "Pro активен на этом аккаунте.";
+"paywall.products.unavailable" = "Продукты сейчас недоступны.";
+"paywall.error.title"    = "Ошибка покупки";
+"paywall.error.fallback" = "Что-то пошло не так.";
+"paywall.pending"        = "Покупка ожидает подтверждения.";
+"paywall.error.unknown"  = "Неизвестный результат покупки.";
+
+"paywall.feature.dynamic"        = "Dynamic Island и Live Activities";
+"paywall.feature.stats"          = "Расширенная статистика";
+"paywall.feature.stats.desc"     = "Глубокий прогресс и история сессий.";
+"paywall.feature.intervals"      = "Настраиваемые интервалы";
+"paywall.feature.intervals.desc" = "Подбери длительность фокуса и перерывов.";
+"paywall.feature.widgets"        = "Виджеты и премиум-качество";
+"paywall.feature.widgets.desc"   = "Более чистый и полный опыт Ro.";
+"paywall.feature.notifications"  = "Умные уведомления";
+"paywall.feature.standby"        = "StandBy виджет";
+
+// MARK: - Widget
+"widget.displayName" = "Ro таймер фокуса";
+"widget.description" = "Текущая сессия и оставшееся время.";
+
+// MARK: - Accessibility
+"a11y.stats"         = "Статистика";
+"a11y.settings"      = "Настройки";
+"a11y.reset"         = "Сбросить таймер";
+"a11y.skip"          = "К следующему режиму";
+"a11y.start"         = "Запустить таймер";
+"a11y.pause"         = "Пауза";
+"a11y.timer.hint"    = "Свайп вверх или вниз для изменения длительности";
+"a11y.duration.hint" = "Регулируется";
+"a11y.onboarding.next.hint"  = "Переход на следующую страницу";
+"a11y.onboarding.start.hint" = "Запускает приложение";

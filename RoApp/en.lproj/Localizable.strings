@@ -1,0 +1,101 @@
+// MARK: - Timer Modes
+"mode.focus" = "Focus";
+"mode.short" = "Break";
+"mode.long"  = "Long Break";
+
+// MARK: - Onboarding
+"onboarding.title.0" = "welcome to ro";
+"onboarding.body.0"  = "A minimal focus timer.\nNo noise. Just work.";
+
+"onboarding.title.1" = "pomodoro timer";
+"onboarding.body.1"  = "25 minutes of focus,\n5 minutes of rest.\nA proven method.";
+
+"onboarding.title.2" = "widgets everywhere";
+"onboarding.body.2"  = "Lock Screen, Dynamic Island,\nStandBy — the timer is always near.";
+
+"onboarding.title.3" = "track your progress";
+"onboarding.body.3"  = "Day streaks, weekly charts,\nsession history.";
+
+"onboarding.next"  = "next";
+"onboarding.start" = "get started";
+
+// MARK: - Settings
+"settings.title"         = "settings";
+"settings.durations"     = "duration";
+"settings.preferences"   = "preferences";
+"settings.about"         = "about";
+"settings.haptics"       = "haptics";
+"settings.notifications" = "notifications";
+"settings.autoBreak"     = "auto-break";
+"settings.version"       = "version";
+"settings.build"         = "build";
+
+// MARK: - Statistics
+"stats.title"       = "statistics";
+"stats.today"       = "today";
+"stats.minutes"     = "min";
+"stats.sessions"    = "sessions";
+"stats.week"        = "7 days";
+"stats.streak"      = "streak";
+"stats.record"      = "record";
+"stats.days"        = "days";
+"stats.recent"      = "recent sessions";
+"stats.empty"       = "no sessions yet";
+
+// MARK: - Notifications
+"notif.focus.title"  = "Session complete 完了";
+"notif.focus.body"   = "Time to rest. Well done.";
+"notif.short.title"  = "Break is over";
+"notif.short.body"   = "Ready for the next session?";
+"notif.long.title"   = "Long break is over";
+"notif.long.body"    = "Recharged and ready to work.";
+
+// MARK: - Settings Pro Banner
+"settings.pro.title"    = "ro pro";
+"settings.pro.subtitle" = "Advanced stats, widgets, premium polish";
+
+// MARK: - Paywall
+"paywall.title"    = "ro pro";
+"paywall.subtitle" = "Unlock the full version of your focus system.";
+"paywall.monthly"  = "Monthly";
+"paywall.annual"   = "Annual";
+"paywall.badge.save"      = "−40%";
+"paywall.badge.bestValue" = "BEST VALUE";
+"paywall.badge.flexible"  = "FLEXIBLE";
+"paywall.cta"      = "Continue";
+"paywall.restore"  = "Restore Purchases";
+"paywall.close"    = "Close";
+"paywall.terms"    = "Subscriptions renew automatically unless cancelled.";
+"paywall.bestValue"          = "Best value over time.";
+"paywall.pro.active"         = "Pro is active on this account.";
+"paywall.products.unavailable" = "Products are unavailable right now.";
+"paywall.error.title"    = "Purchase Error";
+"paywall.error.fallback" = "Something went wrong.";
+"paywall.pending"        = "Purchase is pending approval.";
+"paywall.error.unknown"  = "Unknown purchase result.";
+
+"paywall.feature.dynamic"        = "Dynamic Island & Live Activities";
+"paywall.feature.stats"          = "Advanced statistics";
+"paywall.feature.stats.desc"     = "See deeper progress and session history.";
+"paywall.feature.intervals"      = "Custom timer durations";
+"paywall.feature.intervals.desc" = "Tune focus and break lengths to your workflow.";
+"paywall.feature.widgets"        = "Widgets and premium polish";
+"paywall.feature.widgets.desc"   = "A cleaner, more complete Ro experience.";
+"paywall.feature.notifications"  = "Smart notifications";
+"paywall.feature.standby"        = "StandBy widget";
+
+// MARK: - Widget
+"widget.displayName" = "Ro Focus Timer";
+"widget.description" = "Shows your current focus session and remaining time.";
+
+// MARK: - Accessibility
+"a11y.stats"         = "Statistics";
+"a11y.settings"      = "Settings";
+"a11y.reset"         = "Reset timer";
+"a11y.skip"          = "Skip to next mode";
+"a11y.start"         = "Start timer";
+"a11y.pause"         = "Pause timer";
+"a11y.timer.hint"    = "Swipe up or down to adjust duration";
+"a11y.duration.hint" = "Adjustable";
+"a11y.onboarding.next.hint"  = "Goes to next page";
+"a11y.onboarding.start.hint" = "Starts the app";
