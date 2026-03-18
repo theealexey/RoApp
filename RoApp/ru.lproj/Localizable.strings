@@ -99,3 +99,9 @@
 "a11y.duration.hint" = "Регулируется";
 "a11y.onboarding.next.hint"  = "Переход на следующую страницу";
 "a11y.onboarding.start.hint" = "Запускает приложение";
+
+// MARK: - Appearance
+"settings.appearance" = "Оформление";
+"appearance.system"   = "Системная";
+"appearance.light"    = "Светлая";
+"appearance.dark"     = "Тёмная";

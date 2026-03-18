@@ -1,5 +1,13 @@
 import Foundation
 
+enum AppearanceMode: String, CaseIterable, Identifiable {
+    case system
+    case light
+    case dark
+
+    var id: String { rawValue }
+}
+
 protocol SettingsStoreProtocol: AnyObject {
     var focusDurationMinutes: Int { get set }
     var shortBreakDurationMinutes: Int { get set }
@@ -8,6 +16,7 @@ protocol SettingsStoreProtocol: AnyObject {
     var hapticsEnabled: Bool { get set }
     var notificationsEnabled: Bool { get set }
     var autoStartBreaksEnabled: Bool { get set }
+    var appearanceMode: AppearanceMode { get set }
 
     func duration(for modeRawValue: String) -> TimeInterval
 }
@@ -21,6 +30,7 @@ final class SettingsStore: SettingsStoreProtocol {
         static let hapticsEnabled = "hapticsEnabled"
         static let notificationsEnabled = "notificationsEnabled"
         static let autoStartBreaksEnabled = "autoStartBreaksEnabled"
+        static let appearanceMode = "appearanceMode"
     }
 
     private enum Defaults {
@@ -68,6 +78,14 @@ final class SettingsStore: SettingsStoreProtocol {
     var autoStartBreaksEnabled: Bool {
         get { userDefaults.object(forKey: Keys.autoStartBreaksEnabled) as? Bool ?? Defaults.autoStartBreaksEnabled }
         set { userDefaults.set(newValue, forKey: Keys.autoStartBreaksEnabled) }
+    }
+
+    var appearanceMode: AppearanceMode {
+        get {
+            guard let raw = userDefaults.string(forKey: Keys.appearanceMode) else { return .system }
+            return AppearanceMode(rawValue: raw) ?? .system
+        }
+        set { userDefaults.set(newValue.rawValue, forKey: Keys.appearanceMode) }
     }
 
     func duration(for modeRawValue: String) -> TimeInterval {

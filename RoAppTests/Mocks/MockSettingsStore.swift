@@ -10,6 +10,7 @@ final class MockSettingsStore: SettingsStoreProtocol {
     var hapticsEnabled: Bool = true
     var notificationsEnabled: Bool = true
     var autoStartBreaksEnabled: Bool = false
+    var appearanceMode: AppearanceMode = .system
 
     func duration(for modeRawValue: String) -> TimeInterval {
         let minutes: Int

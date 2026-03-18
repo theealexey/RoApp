@@ -48,6 +48,12 @@ final class SettingsScreenModel {
         }
     }
 
+    var appearanceMode: AppearanceMode {
+        didSet {
+            settingsStore.appearanceMode = appearanceMode
+        }
+    }
+
     init(settingsStore: SettingsStoreProtocol = SettingsStore()) {
         self.settingsStore = settingsStore
         self.focusMinutes = settingsStore.focusDurationMinutes
@@ -56,6 +62,7 @@ final class SettingsScreenModel {
         self.hapticsEnabled = settingsStore.hapticsEnabled
         self.notificationsEnabled = settingsStore.notificationsEnabled
         self.autoStartBreak = settingsStore.autoStartBreaksEnabled
+        self.appearanceMode = settingsStore.appearanceMode
     }
 }
 
@@ -83,7 +90,6 @@ struct SettingsView: View {
                 .padding(.bottom, 52)
             }
         }
-        .preferredColorScheme(.dark)
         .sheet(isPresented: $showPaywall) {
             PaywallView()
                 .presentationBackground(RoTheme.Colors.background)
@@ -196,6 +202,11 @@ struct SettingsView: View {
 
     private var preferencesSection: some View {
         SettingsSection(title: LocalizedStringKey("settings.preferences")) {
+            AppearanceRow(mode: $model.appearanceMode)
+
+            Divider()
+                .background(RoTheme.Colors.borderSubtle)
+
             ToggleRow(
                 label: LocalizedStringKey("settings.haptics"),
                 symbol: "waveform",
@@ -388,6 +399,46 @@ private struct InfoRow: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
+    }
+}
+
+private struct AppearanceRow: View {
+    @Binding var mode: AppearanceMode
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "circle.lefthalf.filled")
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(RoTheme.Colors.accent.opacity(0.7))
+                .frame(width: 20)
+                .accessibilityHidden(true)
+
+            Text(LocalizedStringKey("settings.appearance"))
+                .font(.system(size: 15, weight: .light))
+                .foregroundStyle(RoTheme.Colors.textPrimary)
+
+            Spacer()
+
+            Picker("", selection: $mode) {
+                ForEach(AppearanceMode.allCases) { option in
+                    Text(option.localizedName).tag(option)
+                }
+            }
+            .pickerStyle(.menu)
+            .tint(RoTheme.Colors.accent)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+    }
+}
+
+extension AppearanceMode {
+    var localizedName: String {
+        switch self {
+        case .system: String(localized: "appearance.system", defaultValue: "System")
+        case .light:  String(localized: "appearance.light", defaultValue: "Light")
+        case .dark:   String(localized: "appearance.dark", defaultValue: "Dark")
+        }
     }
 }
 

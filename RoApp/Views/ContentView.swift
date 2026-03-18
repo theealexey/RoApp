@@ -431,7 +431,7 @@ private struct PlayPauseButton: View {
                     )
                     .overlay(
                         Circle()
-                            .strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5)
+                            .strokeBorder(RoTheme.Colors.borderSubtle, lineWidth: 0.5)
                     )
                     .scaleEffect(isPressed ? 0.92 : 1.0)
 

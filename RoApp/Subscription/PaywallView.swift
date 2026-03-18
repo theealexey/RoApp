@@ -56,11 +56,11 @@ struct PaywallView: View {
         VStack(spacing: 14) {
             Text(LocalizedStringKey("paywall.title"))
                 .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(RoTheme.Colors.textPrimary)
 
             Text(LocalizedStringKey("paywall.subtitle"))
                 .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(.white.opacity(0.75))
+                .foregroundStyle(RoTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
         }
         .padding(.top, 12)
@@ -94,11 +94,11 @@ struct PaywallView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(RoTheme.Colors.textPrimary)
 
                 Text(subtitle)
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(RoTheme.Colors.textSecondary)
             }
 
             Spacer()
@@ -112,13 +112,13 @@ struct PaywallView: View {
         VStack(spacing: 12) {
             if subscriptionService.isLoading {
                 ProgressView()
-                    .tint(.white)
+                    .tint(RoTheme.Colors.textPrimary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 24)
             } else if subscriptionService.products.isEmpty {
                 Text(LocalizedStringKey("paywall.products.unavailable"))
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(RoTheme.Colors.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(16)
                     .background(cardBackground)
@@ -140,22 +140,22 @@ struct PaywallView: View {
                         HStack(spacing: 8) {
                             Text(product.displayName)
                                 .font(.system(size: 18, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(RoTheme.Colors.textPrimary)
 
                             if let badge = badgeText(for: product.id) {
                                 Text(badge)
                                     .font(.system(size: 11, weight: .bold, design: .rounded))
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(RoTheme.Colors.background)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(Color.white)
+                                    .background(RoTheme.Colors.textPrimary)
                                     .clipShape(Capsule())
                             }
                         }
 
                         Text(product.description)
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.65))
+                            .foregroundStyle(RoTheme.Colors.textSecondary)
                             .multilineTextAlignment(.leading)
                     }
 
@@ -163,7 +163,7 @@ struct PaywallView: View {
 
                     Text(product.displayPrice)
                         .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(RoTheme.Colors.textPrimary)
                 }
 
                 if product.id == RoProduct.annual.rawValue {
@@ -200,13 +200,13 @@ struct PaywallView: View {
                 HStack {
                     if isRestoringPurchases {
                         ProgressView()
-                            .tint(.white)
+                            .tint(RoTheme.Colors.textPrimary)
                     } else {
                         Text(LocalizedStringKey("paywall.restore"))
                             .font(.system(size: 16, weight: .semibold))
                     }
                 }
-                .foregroundStyle(.white)
+                .foregroundStyle(RoTheme.Colors.textPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
                 .background(cardBackground)
@@ -226,24 +226,24 @@ struct PaywallView: View {
         VStack(spacing: 8) {
             Text(LocalizedStringKey("paywall.terms"))
                 .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.white.opacity(0.5))
+                .foregroundStyle(RoTheme.Colors.textTertiary)
                 .multilineTextAlignment(.center)
 
             Button(String(localized: "paywall.close", defaultValue: "Close")) {
                 dismiss()
             }
             .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(.white.opacity(0.8))
+            .foregroundStyle(RoTheme.Colors.textSecondary)
         }
         .padding(.top, 8)
     }
 
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: 22, style: .continuous)
-            .fill(.white.opacity(0.08))
+            .fill(RoTheme.Colors.surfaceGlass)
             .overlay {
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(.white.opacity(0.08), lineWidth: 1)
+                    .stroke(RoTheme.Colors.borderSubtle, lineWidth: 1)
             }
     }
 

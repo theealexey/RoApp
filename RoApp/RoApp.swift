@@ -17,6 +17,7 @@ struct RoApp: App {
 struct AppRootView: View {
     @State private var hasSeenOnboarding =
         UserDefaults.standard.bool(forKey: SettingsViewModel.Keys.hasSeenOnboarding)
+    @State private var settingsStore = SettingsStore()
 
     @Environment(\.modelContext) private var modelContext
 
@@ -32,6 +33,15 @@ struct AppRootView: View {
                     hasSeenOnboarding = true
                 }
             }
+        }
+        .preferredColorScheme(resolvedColorScheme)
+    }
+
+    private var resolvedColorScheme: ColorScheme? {
+        switch settingsStore.appearanceMode {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
         }
     }
 }

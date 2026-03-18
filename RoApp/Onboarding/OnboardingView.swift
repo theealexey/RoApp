@@ -58,7 +58,6 @@ struct OnboardingView: View {
                 .padding(.bottom, 28)
                 .zIndex(1000)
         }
-        .preferredColorScheme(.dark)
     }
 
     private var bottomOverlay: some View {

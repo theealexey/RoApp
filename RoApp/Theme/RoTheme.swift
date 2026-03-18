@@ -2,27 +2,75 @@ import SwiftUI
 
 // MARK: - Design Tokens
 /// Single source of truth for all visual constants.
-/// Adding a new theme = one file change, zero view edits (Open/Closed).
+/// Colors adapt automatically to light/dark mode via UIColor trait resolution.
 enum RoTheme {
 
     // MARK: Colors
     enum Colors {
-        static let background    = Color(red: 0.04, green: 0.04, blue: 0.07)
-        static let accent        = Color(red: 0.35, green: 0.30, blue: 0.90)
-        static let accentMuted   = accent.opacity(0.45)
-        static let accentSubtle  = accent.opacity(0.65)
-        static let success       = Color(red: 0.30, green: 0.85, blue: 0.60)
-        static let idleOrb       = Color(red: 0.25, green: 0.22, blue: 0.60)
-        static let chipFill      = accent.opacity(0.3)
-        static let chipBorder    = accent.opacity(0.5)
-        static let trackStroke   = Color.white.opacity(0.06)
-        static let surfaceGlass  = Color.white.opacity(0.06)
-        static let borderSubtle  = Color.white.opacity(0.08)
-        static let textPrimary   = Color.white
-        static let textSecondary = Color.white.opacity(0.5)
-        static let textTertiary  = Color.white.opacity(0.3)
-        static let textGhost     = Color.white.opacity(0.2)
-        static let textHint      = Color.white.opacity(0.45)
+        // MARK: Backgrounds & Surfaces
+
+        static let background = adaptive(
+            light: UIColor(red: 0.98, green: 0.98, blue: 0.99, alpha: 1),
+            dark: UIColor(red: 0.04, green: 0.04, blue: 0.07, alpha: 1)
+        )
+
+        static let surfaceGlass = adaptive(
+            light: UIColor(white: 0, alpha: 0.04),
+            dark: UIColor(white: 1, alpha: 0.06)
+        )
+
+        static let borderSubtle = adaptive(
+            light: UIColor(white: 0, alpha: 0.08),
+            dark: UIColor(white: 1, alpha: 0.08)
+        )
+
+        static let trackStroke = adaptive(
+            light: UIColor(white: 0, alpha: 0.08),
+            dark: UIColor(white: 1, alpha: 0.06)
+        )
+
+        // MARK: Accent (same in both themes)
+
+        static let accent      = Color(red: 0.35, green: 0.30, blue: 0.90)
+        static let accentMuted = accent.opacity(0.45)
+        static let accentSubtle = accent.opacity(0.65)
+        static let success     = Color(red: 0.30, green: 0.85, blue: 0.60)
+        static let idleOrb     = Color(red: 0.25, green: 0.22, blue: 0.60)
+        static let chipFill    = accent.opacity(0.3)
+        static let chipBorder  = accent.opacity(0.5)
+
+        // MARK: Text
+
+        static let textPrimary = adaptive(
+            light: UIColor(white: 0.08, alpha: 1),
+            dark: UIColor.white
+        )
+
+        static let textSecondary = adaptive(
+            light: UIColor(white: 0, alpha: 0.55),
+            dark: UIColor(white: 1, alpha: 0.5)
+        )
+
+        static let textTertiary = adaptive(
+            light: UIColor(white: 0, alpha: 0.35),
+            dark: UIColor(white: 1, alpha: 0.3)
+        )
+
+        static let textGhost = adaptive(
+            light: UIColor(white: 0, alpha: 0.18),
+            dark: UIColor(white: 1, alpha: 0.2)
+        )
+
+        static let textHint = adaptive(
+            light: UIColor(white: 0, alpha: 0.45),
+            dark: UIColor(white: 1, alpha: 0.45)
+        )
+
+        // MARK: Helpers
+
+        private static func adaptive(light: UIColor, dark: UIColor) -> Color {
+            Color(UIColor { $0.userInterfaceStyle == .dark ? dark : light })
+        }
     }
 
     // MARK: Layout

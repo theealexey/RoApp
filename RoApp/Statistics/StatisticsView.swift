@@ -22,7 +22,6 @@ struct StatisticsView: View {
                 .padding(.bottom, 52)
             }
         }
-        .preferredColorScheme(.dark)
         .task {
             let repository = SessionRepository(context: context)
             vm.load(repository: repository)

@@ -99,3 +99,9 @@
 "a11y.duration.hint" = "Adjustable";
 "a11y.onboarding.next.hint"  = "Goes to next page";
 "a11y.onboarding.start.hint" = "Starts the app";
+
+// MARK: - Appearance
+"settings.appearance" = "Appearance";
+"appearance.system"   = "System";
+"appearance.light"    = "Light";
+"appearance.dark"     = "Dark";
