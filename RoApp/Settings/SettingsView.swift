@@ -90,6 +90,7 @@ struct SettingsView: View {
                 .padding(.bottom, 52)
             }
         }
+        .preferredColorScheme(model.appearanceMode.colorScheme)
         .sheet(isPresented: $showPaywall) {
             PaywallView()
                 .presentationBackground(RoTheme.Colors.background)

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum AppearanceMode: String, CaseIterable, Identifiable {
     case system
@@ -6,6 +7,14 @@ enum AppearanceMode: String, CaseIterable, Identifiable {
     case dark
 
     var id: String { rawValue }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
+        }
+    }
 }
 
 protocol SettingsStoreProtocol: AnyObject {
