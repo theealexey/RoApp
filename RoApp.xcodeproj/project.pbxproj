@@ -65,12 +65,27 @@
 			);
 			target = 8A5077B02F6852FE00AF88FF /* RoWidgetExtension */;
 		};
+		8AD2867A2F6A95750025E35D /* Exceptions for "RoApp" folder in "RoApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8A50772C2F681B8F00AF88FF /* RoApp */;
+		};
+		8AD2867C2F6A96240025E35D /* Exceptions for "RoWidget" folder in "RoApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RoLiveActivity.swift,
+			);
+			target = 8A50772C2F681B8F00AF88FF /* RoApp */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8A50772F2F681B8F00AF88FF /* RoApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				8AD2867A2F6A95750025E35D /* Exceptions for "RoApp" folder in "RoApp" target */,
 				8A5077CF2F68559100AF88FF /* Exceptions for "RoApp" folder in "RoWidgetExtension" target */,
 			);
 			path = RoApp;
@@ -79,6 +94,7 @@
 		8A5077B72F6852FE00AF88FF /* RoWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				8AD2867C2F6A96240025E35D /* Exceptions for "RoWidget" folder in "RoApp" target */,
 				8A5077C72F68530000AF88FF /* Exceptions for "RoWidget" folder in "RoWidgetExtension" target */,
 			);
 			path = RoWidget;
@@ -99,19 +115,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AABB00010000000000000003 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8A5077AE2F6852FE00AF88FF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				8A5077B62F6852FE00AF88FF /* SwiftUI.framework in Frameworks */,
 				8A5077B42F6852FE00AF88FF /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABB00010000000000000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,14 +281,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AABB00010000000000000004 /* Resources */ = {
+		8A5077AF2F6852FE00AF88FF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8A5077AF2F6852FE00AF88FF /* Resources */ = {
+		AABB00010000000000000004 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -289,14 +305,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AABB00010000000000000002 /* Sources */ = {
+		8A5077AD2F6852FE00AF88FF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8A5077AD2F6852FE00AF88FF /* Sources */ = {
+		AABB00010000000000000002 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -451,6 +467,7 @@
 				DEVELOPMENT_TEAM = 9GUT847JBJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RoApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -488,6 +505,7 @@
 				DEVELOPMENT_TEAM = 9GUT847JBJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RoApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

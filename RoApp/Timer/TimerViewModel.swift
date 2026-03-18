@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import ActivityKit
 
 protocol TimerViewModelProtocol: AnyObject {
     var mode: TimerMode { get }
@@ -71,6 +72,7 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .running
 
         scheduleCountdown()
+        startOrUpdateLiveActivity()
         syncToWidget()
 
         if settingsStore.notificationsEnabled {
@@ -89,6 +91,7 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .paused
 
         cancelCountdown()
+        updateLiveActivityState()
         syncToWidget()
         NotificationService.shared.cancelCompletion(for: mode)
     }
@@ -103,6 +106,7 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .idle
 
         syncToWidget()
+        endLiveActivity()
         NotificationService.shared.cancelAll()
     }
 
@@ -120,6 +124,7 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .idle
 
         syncToWidget()
+        endLiveActivity()
     }
 
     func select(mode newMode: TimerMode) {
@@ -183,6 +188,7 @@ final class TimerViewModel: TimerViewModelProtocol {
         NotificationService.shared.cancelAll()
 
         HapticsService.shared.finish()
+        endLiveActivity()
 
         moveToNextStateAfterCompletion(from: completedMode)
     }
@@ -237,5 +243,69 @@ final class TimerViewModel: TimerViewModelProtocol {
         case .focus: .short
         case .short, .long: .focus
         }
+    }
+    
+    // MARK: - Live Activity
+
+    private var currentActivity: Activity<RoTimerAttributes>?
+
+    private func startOrUpdateLiveActivity() {
+        let contentState = makeContentState()
+
+        if let activity = currentActivity {
+            Task {
+                await activity.update(
+                    ActivityContent(state: contentState, staleDate: endDate)
+                )
+            }
+            return
+        }
+
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+
+        let attributes = RoTimerAttributes()
+        let content = ActivityContent(state: contentState, staleDate: endDate)
+
+        do {
+            currentActivity = try Activity.request(
+                attributes: attributes,
+                content: content,
+                pushType: nil
+            )
+        } catch {
+            print("Live Activity start failed: \(error.localizedDescription)")
+        }
+    }
+
+    private func updateLiveActivityState() {
+        guard let activity = currentActivity else { return }
+        let contentState = makeContentState()
+        Task {
+            await activity.update(
+                ActivityContent(state: contentState, staleDate: nil)
+            )
+        }
+    }
+
+    private func endLiveActivity() {
+        guard let activity = currentActivity else { return }
+        let contentState = makeContentState()
+        Task {
+            await activity.end(
+                ActivityContent(state: contentState, staleDate: nil),
+                dismissalPolicy: .after(.now + 4)
+            )
+        }
+        currentActivity = nil
+    }
+
+    private func makeContentState() -> RoTimerAttributes.ContentState {
+        RoTimerAttributes.ContentState(
+            timeRemaining: timeRemaining,
+            totalDuration: sessionStartDuration,
+            modeRaw: mode.rawValue,
+            isRunning: state == .running,
+            endDate: endDate
+        )
     }
 }
