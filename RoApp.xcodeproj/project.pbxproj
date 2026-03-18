@@ -19,6 +19,13 @@
 			remoteGlobalIDString = 8A5077B02F6852FE00AF88FF;
 			remoteInfo = RoWidgetExtension;
 		};
+		AABB00010000000000000009 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8A5077252F681B8F00AF88FF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A50772C2F681B8F00AF88FF;
+			remoteInfo = RoApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +47,7 @@
 		8A5077D12F6857FE00AF88FF /* RoWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RoWidgetExtension.entitlements; sourceTree = "<group>"; };
 		8A7A91462F69841700D3991B /* RoWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RoWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A7A91472F69841700D3991B /* RoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABB00010000000000000001 /* RoAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RoAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -76,10 +84,22 @@
 			path = RoWidget;
 			sourceTree = "<group>";
 		};
+		AABB0001000000000000000B /* RoAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RoAppTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8A50772A2F681B8F00AF88FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABB00010000000000000003 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -103,10 +123,12 @@
 			children = (
 				8A5077D12F6857FE00AF88FF /* RoWidgetExtension.entitlements */,
 				8A5077B72F6852FE00AF88FF /* RoWidget */,
+				AABB0001000000000000000B /* RoAppTests */,
 				8A5077B22F6852FE00AF88FF /* Frameworks */,
 				8A50772F2F681B8F00AF88FF /* RoApp */,
 				8A7A91462F69841700D3991B /* RoWidgetExtension.appex */,
 				8A7A91472F69841700D3991B /* RoApp.app */,
+				AABB00010000000000000001 /* RoAppTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -168,6 +190,29 @@
 			productReference = 8A7A91462F69841700D3991B /* RoWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		AABB00010000000000000005 /* RoAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABB00010000000000000008 /* Build configuration list for PBXNativeTarget "RoAppTests" */;
+			buildPhases = (
+				AABB00010000000000000002 /* Sources */,
+				AABB00010000000000000003 /* Frameworks */,
+				AABB00010000000000000004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AABB0001000000000000000A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AABB0001000000000000000B /* RoAppTests */,
+			);
+			name = RoAppTests;
+			packageProductDependencies = (
+			);
+			productName = RoAppTests;
+			productReference = AABB00010000000000000001 /* RoAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -183,6 +228,10 @@
 					};
 					8A5077B02F6852FE00AF88FF = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					AABB00010000000000000005 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 8A50772C2F681B8F00AF88FF;
 					};
 				};
 			};
@@ -203,12 +252,20 @@
 			targets = (
 				8A50772C2F681B8F00AF88FF /* RoApp */,
 				8A5077B02F6852FE00AF88FF /* RoWidgetExtension */,
+				AABB00010000000000000005 /* RoAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8A50772B2F681B8F00AF88FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABB00010000000000000004 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -232,6 +289,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AABB00010000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8A5077AD2F6852FE00AF88FF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -246,6 +310,11 @@
 			isa = PBXTargetDependency;
 			target = 8A5077B02F6852FE00AF88FF /* RoWidgetExtension */;
 			targetProxy = 8A5077C12F68530000AF88FF /* PBXContainerItemProxy */;
+		};
+		AABB0001000000000000000A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A50772C2F681B8F00AF88FF /* RoApp */;
+			targetProxy = AABB00010000000000000009 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -507,6 +576,52 @@
 			};
 			name = Release;
 		};
+		AABB00010000000000000006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9GUT847JBJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ro.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RoApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RoApp";
+			};
+			name = Debug;
+		};
+		AABB00010000000000000007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9GUT847JBJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ro.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RoApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RoApp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -533,6 +648,15 @@
 			buildConfigurations = (
 				8A5077C52F68530000AF88FF /* Debug */,
 				8A5077C62F68530000AF88FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABB00010000000000000008 /* Build configuration list for PBXNativeTarget "RoAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABB00010000000000000006 /* Debug */,
+				AABB00010000000000000007 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
