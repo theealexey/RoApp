@@ -5,13 +5,16 @@ struct ContentView: View {
     @State private var showStats = false
     @State private var showSettings = false
 
+    private let repository: SessionRepositoryProtocol
+
     init(repository: SessionRepositoryProtocol) {
+        self.repository = repository
         _vm = State(initialValue: TimerViewModel(repository: repository))
     }
 
     var body: some View {
         ZStack {
-            RoBackground(vm: vm)
+            RoBackground(state: vm.state)
 
             VStack(spacing: 36) {
                 TopBarView(
@@ -26,7 +29,7 @@ struct ContentView: View {
             .padding(.horizontal, 24)
         }
         .sheet(isPresented: $showStats) {
-            StatisticsView()
+            StatisticsView(repository: repository)
                 .presentationBackground(RoTheme.Colors.background)
         }
         .sheet(isPresented: $showSettings) {
@@ -35,6 +38,8 @@ struct ContentView: View {
         }
     }
 }
+
+// MARK: - Top Bar
 
 private struct TopBarView: View {
     let onStats: () -> Void
@@ -91,6 +96,8 @@ private struct TopBarButton: View {
     }
 }
 
+// MARK: - Mode Picker
+
 private struct ModePickerView: View {
     let vm: TimerViewModel
 
@@ -101,7 +108,6 @@ private struct ModePickerView: View {
                     withAnimation(RoTheme.Animation.standard) {
                         vm.select(mode: mode)
                     }
-                    HapticsService.shared.tap()
                 }
             }
         }
@@ -140,6 +146,8 @@ private struct ModeChip: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
+
+// MARK: - Timer Ring
 
 private struct TimerRingView: View {
     let vm: TimerViewModel
@@ -195,7 +203,10 @@ private struct TimerRingView: View {
             .animation(RoTheme.Animation.tick, value: vm.progress)
 
             TimerFaceView(
-                vm: vm,
+                formattedTime: vm.formattedTime,
+                modeLabel: vm.mode.labelEN,
+                state: vm.state,
+                timeRemaining: vm.timeRemaining,
                 dragOffset: dragOffset,
                 showHint: showDurationHint
             )
@@ -209,12 +220,8 @@ private struct TimerRingView: View {
                 ? String(localized: "a11y.timer.hint", defaultValue: "Swipe up or down to adjust duration")
                 : ""
         )
-        .onAppear {
-            startPulse()
-        }
-        .onChange(of: vm.state) { _, _ in
-            startPulse()
-        }
+        .onAppear { startPulse() }
+        .onChange(of: vm.state) { _, _ in startPulse() }
     }
 
     private var durationDragGesture: some Gesture {
@@ -290,21 +297,26 @@ private struct ProgressDot: View {
     }
 }
 
+// MARK: - Timer Face
+
 private struct TimerFaceView: View {
-    let vm: TimerViewModel
+    let formattedTime: String
+    let modeLabel: String
+    let state: TimerState
+    let timeRemaining: TimeInterval
     let dragOffset: CGFloat
     let showHint: Bool
 
     var body: some View {
         VStack(spacing: 6) {
-            Text(vm.formattedTime)
+            Text(formattedTime)
                 .font(RoTheme.Typography.timer)
                 .foregroundStyle(RoTheme.Colors.textPrimary)
                 .monospacedDigit()
                 .contentTransition(.numericText(countsDown: true))
-                .animation(RoTheme.Animation.standard, value: vm.formattedTime)
+                .animation(RoTheme.Animation.standard, value: formattedTime)
 
-            Text(vm.mode.labelEN)
+            Text(modeLabel)
                 .font(RoTheme.Typography.modeLabel)
                 .foregroundStyle(RoTheme.Colors.textGhost)
                 .tracking(4)
@@ -314,14 +326,14 @@ private struct TimerFaceView: View {
                     Image(systemName: dragOffset < 0 ? "chevron.up" : "chevron.down")
                         .font(RoTheme.Typography.hintIcon)
 
-                    Text("\(Int(vm.timeRemaining / 60)) \(String(localized: "unit.min", defaultValue: "мин"))")
+                    Text("\(Int(timeRemaining / 60)) \(String(localized: "unit.min", defaultValue: "мин"))")
                         .font(RoTheme.Typography.hint)
                 }
                 .foregroundStyle(RoTheme.Colors.textHint)
                 .transition(.opacity.combined(with: .scale(scale: 0.85)))
             }
 
-            if vm.state == .finished {
+            if state == .finished {
                 Text(String(localized: "state.finished", defaultValue: "完了"))
                     .font(RoTheme.Typography.finished)
                     .foregroundStyle(RoTheme.Colors.success.opacity(0.8))
@@ -329,9 +341,11 @@ private struct TimerFaceView: View {
                     .transition(.opacity.combined(with: .scale(scale: 0.8)))
             }
         }
-        .animation(RoTheme.Animation.gentle, value: vm.state)
+        .animation(RoTheme.Animation.gentle, value: state)
     }
 }
+
+// MARK: - Controls
 
 private struct ControlsView: View {
     let vm: TimerViewModel
@@ -345,7 +359,6 @@ private struct ControlsView: View {
                 withAnimation(RoTheme.Animation.standard) {
                     vm.reset()
                 }
-                HapticsService.shared.reset()
             }
 
             Spacer()
@@ -361,7 +374,6 @@ private struct ControlsView: View {
                 withAnimation(RoTheme.Animation.standard) {
                     vm.skipToNextMode()
                 }
-                HapticsService.shared.reset()
             }
         }
         .padding(.horizontal, 16)
@@ -407,10 +419,8 @@ private struct PlayPauseButton: View {
             withAnimation(RoTheme.Animation.standard) {
                 if vm.isRunning {
                     vm.pause()
-                    HapticsService.shared.pause()
                 } else {
                     vm.start()
-                    HapticsService.shared.start()
                 }
             }
         } label: {
@@ -451,18 +461,16 @@ private struct PlayPauseButton: View {
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in
-                    withAnimation(RoTheme.Animation.press) {
-                        isPressed = true
-                    }
+                    withAnimation(RoTheme.Animation.press) { isPressed = true }
                 }
                 .onEnded { _ in
-                    withAnimation(RoTheme.Animation.release) {
-                        isPressed = false
-                    }
+                    withAnimation(RoTheme.Animation.release) { isPressed = false }
                 }
         )
     }
 }
+
+// MARK: - Preview
 
 #Preview {
     ContentView(repository: PreviewSessionRepository())
@@ -471,6 +479,4 @@ private struct PlayPauseButton: View {
 private final class PreviewSessionRepository: SessionRepositoryProtocol {
     func save(mode: TimerMode, duration: TimeInterval) throws {}
     func fetchAll() throws -> [FocusSession] { [] }
-    func totalFocusTime() throws -> TimeInterval { 0 }
-    func sessionsToday() throws -> [FocusSession] { [] }
 }

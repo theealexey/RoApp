@@ -1,13 +1,17 @@
-import WidgetKit
 import SwiftUI
-import ActivityKit
+import os.log
 
+// MARK: - Protocol
+
+@MainActor
 protocol TimerViewModelProtocol: AnyObject {
     var mode: TimerMode { get }
     var state: TimerState { get }
     var timeRemaining: TimeInterval { get }
     var progress: Double { get }
     var formattedTime: String { get }
+    var isRunning: Bool { get }
+    var currentBaseDurationMinutes: Int { get }
 
     func start()
     func pause()
@@ -16,6 +20,8 @@ protocol TimerViewModelProtocol: AnyObject {
     func select(mode: TimerMode)
     func setCustomDuration(minutes: Int)
 }
+
+// MARK: - Implementation
 
 @MainActor
 @Observable
@@ -31,38 +37,62 @@ final class TimerViewModel: TimerViewModelProtocol {
 
     private let repository: SessionRepositoryProtocol
     private let settingsStore: SettingsStoreProtocol
+    private let notifications: NotificationServiceProtocol
+    private let haptics: HapticsServiceProtocol
+    private let liveActivity: LiveActivityServiceProtocol
+    private let widgetSync: WidgetSyncServiceProtocol
+
+    convenience init(repository: SessionRepositoryProtocol) {
+        let settings = SettingsStore()
+        self.init(
+            repository: repository,
+            settingsStore: settings,
+            notifications: NotificationService.shared,
+            haptics: HapticsService(settingsStore: settings),
+            liveActivity: LiveActivityService(),
+            widgetSync: WidgetSyncService()
+        )
+    }
 
     init(
         repository: SessionRepositoryProtocol,
-        settingsStore: SettingsStoreProtocol = SettingsStore()
+        settingsStore: SettingsStoreProtocol,
+        notifications: NotificationServiceProtocol,
+        haptics: HapticsServiceProtocol,
+        liveActivity: LiveActivityServiceProtocol,
+        widgetSync: WidgetSyncServiceProtocol
     ) {
         self.repository = repository
         self.settingsStore = settingsStore
+        self.notifications = notifications
+        self.haptics = haptics
+        self.liveActivity = liveActivity
+        self.widgetSync = widgetSync
 
-        let initialDuration = settingsStore.duration(for: TimerMode.focus.rawValue)
+        let initialDuration = settingsStore.duration(for: .focus)
         self.timeRemaining = initialDuration
         self.sessionStartDuration = initialDuration
     }
 
+    // MARK: - Computed
+
     var progress: Double {
         guard sessionStartDuration > 0 else { return 0 }
-
-        let progressValue = 1.0 - (timeRemaining / sessionStartDuration)
-        return min(max(progressValue, 0), 1)
+        let value = 1.0 - (timeRemaining / sessionStartDuration)
+        return min(max(value, 0), 1)
     }
 
     var formattedTime: String {
-        let totalSeconds = max(0, Int(ceil(timeRemaining)))
-        return String(format: "%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+        TimeFormatting.format(seconds: timeRemaining)
     }
 
-    var isRunning: Bool {
-        state == .running
-    }
+    var isRunning: Bool { state == .running }
 
     var currentBaseDurationMinutes: Int {
-        Int(duration(for: mode) / 60)
+        Int(settingsStore.duration(for: mode) / 60)
     }
+
+    // MARK: - Actions
 
     func start() {
         guard state != .running else { return }
@@ -72,11 +102,12 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .running
 
         scheduleCountdown()
-        startOrUpdateLiveActivity()
+        liveActivity.startOrUpdate(state: makeLiveState())
         syncToWidget()
+        haptics.start()
 
         if settingsStore.notificationsEnabled {
-            NotificationService.shared.scheduleCompletion(for: mode, in: timeRemaining)
+            notifications.scheduleCompletion(for: mode, in: timeRemaining)
         }
     }
 
@@ -91,31 +122,33 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .paused
 
         cancelCountdown()
-        updateLiveActivityState()
+        liveActivity.update(state: makeLiveState())
         syncToWidget()
-        NotificationService.shared.cancelCompletion(for: mode)
+        notifications.cancelCompletion(for: mode)
+        haptics.pause()
     }
 
     func reset() {
         cancelCountdown()
 
-        let currentDuration = duration(for: mode)
+        let currentDuration = settingsStore.duration(for: mode)
         endDate = nil
         timeRemaining = currentDuration
         sessionStartDuration = currentDuration
         state = .idle
 
         syncToWidget()
-        endLiveActivity()
-        NotificationService.shared.cancelAll()
+        liveActivity.end(state: makeLiveState())
+        notifications.cancelAll()
+        haptics.reset()
     }
 
     func skipToNextMode() {
         cancelCountdown()
-        NotificationService.shared.cancelAll()
+        notifications.cancelAll()
 
         let nextMode = nextMode(after: mode)
-        let nextDuration = duration(for: nextMode)
+        let nextDuration = settingsStore.duration(for: nextMode)
 
         mode = nextMode
         endDate = nil
@@ -124,13 +157,14 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .idle
 
         syncToWidget()
-        endLiveActivity()
+        liveActivity.end(state: makeLiveState())
+        haptics.reset()
     }
 
     func select(mode newMode: TimerMode) {
         cancelCountdown()
 
-        let newDuration = duration(for: newMode)
+        let newDuration = settingsStore.duration(for: newMode)
         mode = newMode
         endDate = nil
         timeRemaining = newDuration
@@ -138,7 +172,8 @@ final class TimerViewModel: TimerViewModelProtocol {
         state = .idle
 
         syncToWidget()
-        NotificationService.shared.cancelAll()
+        notifications.cancelAll()
+        haptics.tap()
     }
 
     func setCustomDuration(minutes: Int) {
@@ -150,6 +185,8 @@ final class TimerViewModel: TimerViewModelProtocol {
 
         syncToWidget()
     }
+
+    // MARK: - Private
 
     private func scheduleCountdown() {
         cancelCountdown()
@@ -185,17 +222,16 @@ final class TimerViewModel: TimerViewModelProtocol {
         saveSession(mode: completedMode, duration: completedDuration)
         syncToWidget()
         cancelCountdown()
-        NotificationService.shared.cancelAll()
-
-        HapticsService.shared.finish()
-        endLiveActivity()
+        notifications.cancelAll()
+        haptics.finish()
+        liveActivity.end(state: makeLiveState())
 
         moveToNextStateAfterCompletion(from: completedMode)
     }
 
     private func moveToNextStateAfterCompletion(from completedMode: TimerMode) {
         let next = nextMode(after: completedMode)
-        let nextDuration = duration(for: next)
+        let nextDuration = settingsStore.duration(for: next)
 
         mode = next
         timeRemaining = nextDuration
@@ -212,7 +248,7 @@ final class TimerViewModel: TimerViewModelProtocol {
         do {
             try repository.save(mode: mode, duration: duration)
         } catch {
-            print("Failed to save session: \(error.localizedDescription)")
+            Logger.timer.error("Failed to save session: \(error.localizedDescription)")
         }
     }
 
@@ -224,18 +260,22 @@ final class TimerViewModel: TimerViewModelProtocol {
             modeRaw: mode.rawValue,
             endDate: endDate
         )
+        widgetSync.sync(sharedState)
+    }
 
-        AppGroup.save(sharedState)
-        WidgetCenter.shared.reloadAllTimelines()
+    private func makeLiveState() -> LiveActivityState {
+        LiveActivityState(
+            timeRemaining: timeRemaining,
+            totalDuration: sessionStartDuration,
+            modeRaw: mode.rawValue,
+            isRunning: state == .running,
+            endDate: endDate
+        )
     }
 
     private func cancelCountdown() {
         countdownTask?.cancel()
         countdownTask = nil
-    }
-
-    private func duration(for mode: TimerMode) -> TimeInterval {
-        settingsStore.duration(for: mode.rawValue)
     }
 
     private func nextMode(after currentMode: TimerMode) -> TimerMode {
@@ -244,68 +284,10 @@ final class TimerViewModel: TimerViewModelProtocol {
         case .short, .long: .focus
         }
     }
-    
-    // MARK: - Live Activity
+}
 
-    private var currentActivity: Activity<RoTimerAttributes>?
+// MARK: - Logger
 
-    private func startOrUpdateLiveActivity() {
-        let contentState = makeContentState()
-
-        if let activity = currentActivity {
-            Task {
-                await activity.update(
-                    ActivityContent(state: contentState, staleDate: endDate)
-                )
-            }
-            return
-        }
-
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-
-        let attributes = RoTimerAttributes()
-        let content = ActivityContent(state: contentState, staleDate: endDate)
-
-        do {
-            currentActivity = try Activity.request(
-                attributes: attributes,
-                content: content,
-                pushType: nil
-            )
-        } catch {
-            print("Live Activity start failed: \(error.localizedDescription)")
-        }
-    }
-
-    private func updateLiveActivityState() {
-        guard let activity = currentActivity else { return }
-        let contentState = makeContentState()
-        Task {
-            await activity.update(
-                ActivityContent(state: contentState, staleDate: nil)
-            )
-        }
-    }
-
-    private func endLiveActivity() {
-        guard let activity = currentActivity else { return }
-        let contentState = makeContentState()
-        Task {
-            await activity.end(
-                ActivityContent(state: contentState, staleDate: nil),
-                dismissalPolicy: .after(.now + 4)
-            )
-        }
-        currentActivity = nil
-    }
-
-    private func makeContentState() -> RoTimerAttributes.ContentState {
-        RoTimerAttributes.ContentState(
-            timeRemaining: timeRemaining,
-            totalDuration: sessionStartDuration,
-            modeRaw: mode.rawValue,
-            isRunning: state == .running,
-            endDate: endDate
-        )
-    }
+extension Logger {
+    static let timer = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.ro.app", category: "Timer")
 }

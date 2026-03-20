@@ -1,7 +1,18 @@
 import UserNotifications
 import Foundation
 
-final class NotificationService: Sendable {
+// MARK: - Protocol
+
+protocol NotificationServiceProtocol: Sendable {
+    func requestAuthorization() async -> Bool
+    func scheduleCompletion(for mode: TimerMode, in seconds: TimeInterval)
+    func cancelCompletion(for mode: TimerMode)
+    func cancelAll()
+}
+
+// MARK: - Implementation
+
+final class NotificationService: NotificationServiceProtocol {
 
     static let shared = NotificationService()
     private init() {}

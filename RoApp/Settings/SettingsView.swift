@@ -1,16 +1,11 @@
 import SwiftUI
 import Observation
 
-enum SettingsViewModel {
-    enum Keys {
-        static let hasSeenOnboarding = "settings.hasSeenOnboarding"
-    }
-}
-
 @MainActor
 @Observable
 final class SettingsScreenModel {
     private let settingsStore: SettingsStoreProtocol
+    private let notifications: NotificationServiceProtocol
 
     var focusMinutes: Int {
         didSet {
@@ -54,8 +49,12 @@ final class SettingsScreenModel {
         }
     }
 
-    init(settingsStore: SettingsStoreProtocol = SettingsStore()) {
+    init(
+        settingsStore: SettingsStoreProtocol = SettingsStore(),
+        notifications: NotificationServiceProtocol = NotificationService.shared
+    ) {
         self.settingsStore = settingsStore
+        self.notifications = notifications
         self.focusMinutes = settingsStore.focusDurationMinutes
         self.shortMinutes = settingsStore.shortBreakDurationMinutes
         self.longMinutes = settingsStore.longBreakDurationMinutes
@@ -63,6 +62,16 @@ final class SettingsScreenModel {
         self.notificationsEnabled = settingsStore.notificationsEnabled
         self.autoStartBreak = settingsStore.autoStartBreaksEnabled
         self.appearanceMode = settingsStore.appearanceMode
+    }
+
+    func requestNotificationAuthorizationIfNeeded() {
+        guard notificationsEnabled else { return }
+        Task {
+            let isAuthorized = await notifications.requestAuthorization()
+            if !isAuthorized {
+                notificationsEnabled = false
+            }
+        }
     }
 }
 
@@ -95,15 +104,8 @@ struct SettingsView: View {
             PaywallView()
                 .presentationBackground(RoTheme.Colors.background)
         }
-        .onChange(of: model.notificationsEnabled) { _, isEnabled in
-            guard isEnabled else { return }
-
-            Task {
-                let isAuthorized = await NotificationService.shared.requestAuthorization()
-                if !isAuthorized {
-                    model.notificationsEnabled = false
-                }
-            }
+        .onChange(of: model.notificationsEnabled) { _, _ in
+            model.requestNotificationAuthorizationIfNeeded()
         }
     }
 

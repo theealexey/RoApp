@@ -123,14 +123,11 @@ struct OnboardingView: View {
     }
 
     private func handlePrimaryButtonTap() {
-        print("Onboarding button tapped. Current page: \(currentPage)")
-
         if currentPage < pages.count - 1 {
             withAnimation(RoTheme.Animation.standard) {
                 currentPage += 1
             }
         } else {
-            print("Onboarding finished")
             onFinish()
         }
     }

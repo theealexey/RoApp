@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RoBackground: View {
-    let vm: TimerViewModel
+    let state: TimerState
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: Double = 0
 
@@ -9,12 +9,12 @@ struct RoBackground: View {
         ZStack {
             RoTheme.Colors.background
                 .ignoresSafeArea()
-            AmbientOrb(state: vm.state, phase: phase)
+            AmbientOrb(state: state, phase: phase)
         }
         .ignoresSafeArea()
         .accessibilityHidden(true)
         .onAppear { startBreathing() }
-        .onChange(of: vm.state) { _, _ in
+        .onChange(of: state) { _, _ in
             phase = 0
             startBreathing()
         }
@@ -35,7 +35,7 @@ struct RoBackground: View {
     }
 
     private var breathDuration: Double {
-        switch vm.state {
+        switch state {
         case .running:  4.0
         case .paused:   6.0
         case .finished: 1.5

@@ -6,11 +6,20 @@ import Foundation
 struct TimerViewModelTests {
 
     private func makeSUT(
-        settings: MockSettingsStore = MockSettingsStore(),
-        repository: MockSessionRepository = MockSessionRepository()
+        settings: MockSettingsStore? = nil,
+        repository: MockSessionRepository? = nil
     ) -> (vm: TimerViewModel, settings: MockSettingsStore, repo: MockSessionRepository) {
-        let vm = TimerViewModel(repository: repository, settingsStore: settings)
-        return (vm, settings, repository)
+        let s = settings ?? MockSettingsStore()
+        let r = repository ?? MockSessionRepository()
+        let vm = TimerViewModel(
+            repository: r,
+            settingsStore: s,
+            notifications: MockNotificationService(),
+            haptics: MockHapticsService(),
+            liveActivity: MockLiveActivityService(),
+            widgetSync: MockWidgetSyncService()
+        )
+        return (vm, s, r)
     }
 
     // MARK: - Initial State

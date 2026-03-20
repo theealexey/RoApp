@@ -1,0 +1,137 @@
+{
+  "identifier" : "F3A1B2C4-D5E6-7890-ABCD-EF1234567890",
+  "type" : "AutoRenewableSubscription",
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21514616",
+      "localizations" : [
+        {
+          "description" : "Unlock all premium features",
+          "displayName" : "Ro Pro",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Доступ ко всем премиум-функциям",
+          "displayName" : "Ro Pro",
+          "locale" : "ru"
+        }
+      ],
+      "name" : "Ro Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "A1B2C3D4",
+          "introductoryOffer" : {
+            "displayPrice" : "0",
+            "internalID" : "INTRO001",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Full year of Ro Pro — best value",
+              "displayName" : "Annual",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Полный год Ro Pro — лучшая цена",
+              "displayName" : "Годовая",
+              "locale" : "ru"
+            }
+          ],
+          "productID" : "roapp_annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Ro Pro Annual",
+          "subscriptionGroupID" : "21514616",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : []
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "E5F6A7B8",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Monthly access to all Pro features",
+              "displayName" : "Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Ежемесячный доступ ко всем функциям Pro",
+              "displayName" : "Ежемесячная",
+              "locale" : "ru"
+            }
+          ],
+          "productID" : "roapp_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Ro Pro Monthly",
+          "subscriptionGroupID" : "21514616",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : []
+        }
+      ]
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "7070707070",
+    "_developerTeamID" : "XXXXXXXXXX",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ],
+    "_timeRate" : 6
+  }
+}

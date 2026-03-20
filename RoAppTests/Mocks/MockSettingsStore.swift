@@ -11,14 +11,14 @@ final class MockSettingsStore: SettingsStoreProtocol {
     var notificationsEnabled: Bool = true
     var autoStartBreaksEnabled: Bool = false
     var appearanceMode: AppearanceMode = .system
+    var hasSeenOnboarding: Bool = false
 
-    func duration(for modeRawValue: String) -> TimeInterval {
+    func duration(for mode: TimerMode) -> TimeInterval {
         let minutes: Int
-        switch modeRawValue {
-        case "focus": minutes = focusDurationMinutes
-        case "short": minutes = shortBreakDurationMinutes
-        case "long":  minutes = longBreakDurationMinutes
-        default:      minutes = focusDurationMinutes
+        switch mode {
+        case .focus: minutes = focusDurationMinutes
+        case .short: minutes = shortBreakDurationMinutes
+        case .long:  minutes = longBreakDurationMinutes
         }
         return TimeInterval(minutes * 60)
     }

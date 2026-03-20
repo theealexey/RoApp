@@ -26,8 +26,9 @@ protocol SettingsStoreProtocol: AnyObject {
     var notificationsEnabled: Bool { get set }
     var autoStartBreaksEnabled: Bool { get set }
     var appearanceMode: AppearanceMode { get set }
+    var hasSeenOnboarding: Bool { get set }
 
-    func duration(for modeRawValue: String) -> TimeInterval
+    func duration(for mode: TimerMode) -> TimeInterval
 }
 
 final class SettingsStore: SettingsStoreProtocol {
@@ -40,6 +41,7 @@ final class SettingsStore: SettingsStoreProtocol {
         static let notificationsEnabled = "notificationsEnabled"
         static let autoStartBreaksEnabled = "autoStartBreaksEnabled"
         static let appearanceMode = "appearanceMode"
+        static let hasSeenOnboarding = "settings.hasSeenOnboarding"
     }
 
     private enum Defaults {
@@ -97,18 +99,18 @@ final class SettingsStore: SettingsStoreProtocol {
         set { userDefaults.set(newValue.rawValue, forKey: Keys.appearanceMode) }
     }
 
-    func duration(for modeRawValue: String) -> TimeInterval {
+    var hasSeenOnboarding: Bool {
+        get { userDefaults.bool(forKey: Keys.hasSeenOnboarding) }
+        set { userDefaults.set(newValue, forKey: Keys.hasSeenOnboarding) }
+    }
+
+    func duration(for mode: TimerMode) -> TimeInterval {
         let minutes: Int
 
-        switch modeRawValue {
-        case "focus":
-            minutes = focusDurationMinutes
-        case "short":
-            minutes = shortBreakDurationMinutes
-        case "long":
-            minutes = longBreakDurationMinutes
-        default:
-            minutes = Defaults.focusDurationMinutes
+        switch mode {
+        case .focus: minutes = focusDurationMinutes
+        case .short: minutes = shortBreakDurationMinutes
+        case .long:  minutes = longBreakDurationMinutes
         }
 
         return TimeInterval(minutes * 60)

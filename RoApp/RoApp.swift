@@ -15,11 +15,16 @@ struct RoApp: App {
 }
 
 struct AppRootView: View {
-    @State private var hasSeenOnboarding =
-        UserDefaults.standard.bool(forKey: SettingsViewModel.Keys.hasSeenOnboarding)
+    private let settingsStore: SettingsStoreProtocol
+    @State private var hasSeenOnboarding: Bool
     @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
 
     @Environment(\.modelContext) private var modelContext
+
+    init(settingsStore: SettingsStoreProtocol = SettingsStore()) {
+        self.settingsStore = settingsStore
+        _hasSeenOnboarding = State(initialValue: settingsStore.hasSeenOnboarding)
+    }
 
     var body: some View {
         Group {
@@ -29,7 +34,7 @@ struct AppRootView: View {
                 )
             } else {
                 OnboardingView {
-                    UserDefaults.standard.set(true, forKey: SettingsViewModel.Keys.hasSeenOnboarding)
+                    settingsStore.hasSeenOnboarding = true
                     hasSeenOnboarding = true
                 }
             }

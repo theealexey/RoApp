@@ -1,12 +1,24 @@
 import UIKit
 
-@MainActor
-final class HapticsService {
+// MARK: - Protocol
 
-    static let shared = HapticsService()
+@MainActor
+protocol HapticsServiceProtocol: AnyObject {
+    func tap()
+    func start()
+    func pause()
+    func finish()
+    func reset()
+}
+
+// MARK: - Implementation
+
+@MainActor
+final class HapticsService: HapticsServiceProtocol {
+
     private let settingsStore: SettingsStoreProtocol
 
-    private init(settingsStore: SettingsStoreProtocol = SettingsStore()) {
+    init(settingsStore: SettingsStoreProtocol) {
         self.settingsStore = settingsStore
     }
 
@@ -53,4 +65,3 @@ final class HapticsService {
         }
     }
 }
-

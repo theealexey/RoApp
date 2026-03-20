@@ -73,28 +73,23 @@ struct SettingsStoreTests {
 
     @Test func durationForFocus() {
         let sut = makeSUT()
-        #expect(sut.duration(for: "focus") == 25 * 60)
+        #expect(sut.duration(for: .focus) == 25 * 60)
     }
 
     @Test func durationForShort() {
         let sut = makeSUT()
-        #expect(sut.duration(for: "short") == 5 * 60)
+        #expect(sut.duration(for: .short) == 5 * 60)
     }
 
     @Test func durationForLong() {
         let sut = makeSUT()
-        #expect(sut.duration(for: "long") == 15 * 60)
-    }
-
-    @Test func durationForUnknownFallsBackToFocus() {
-        let sut = makeSUT()
-        #expect(sut.duration(for: "invalid") == 25 * 60)
+        #expect(sut.duration(for: .long) == 15 * 60)
     }
 
     @Test func durationReflectsCustomValues() {
         let sut = makeSUT()
         sut.focusDurationMinutes = 50
-        #expect(sut.duration(for: "focus") == 50 * 60)
+        #expect(sut.duration(for: .focus) == 50 * 60)
     }
 
     // MARK: - Bool persistence

@@ -2,9 +2,12 @@ import SwiftUI
 import Charts
 
 struct StatisticsView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @State private var vm = StatisticsViewModel()
+    @State private var vm: StatisticsViewModel
+
+    init(repository: SessionRepositoryProtocol) {
+        _vm = State(initialValue: StatisticsViewModel(repository: repository))
+    }
 
     var body: some View {
         ZStack {
@@ -23,8 +26,7 @@ struct StatisticsView: View {
             }
         }
         .task {
-            let repository = SessionRepository(context: context)
-            vm.load(repository: repository)
+            vm.load()
         }
     }
 
@@ -201,5 +203,10 @@ private struct SessionRow: View {
 }
 
 #Preview {
-    StatisticsView()
+    StatisticsView(repository: PreviewSessionRepository())
+}
+
+private final class PreviewSessionRepository: SessionRepositoryProtocol {
+    func save(mode: TimerMode, duration: TimeInterval) throws {}
+    func fetchAll() throws -> [FocusSession] { [] }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 
 // MARK: - Shared between App and Widget
 struct SharedTimerState: Codable, Sendable {
@@ -35,14 +36,10 @@ struct SharedTimerState: Codable, Sendable {
 
     var modeLabelEN: String {
         switch modeRaw {
-        case "focus":
-            return "FOCUS"
-        case "short":
-            return "BREAK"
-        case "long":
-            return "LONG BREAK"
-        default:
-            return "FOCUS"
+        case "focus": "FOCUS"
+        case "short": "BREAK"
+        case "long":  "LONG BREAK"
+        default:      "FOCUS"
         }
     }
 
@@ -76,7 +73,7 @@ enum AppGroup {
             let data = try JSONEncoder().encode(state)
             try data.write(to: url, options: .atomic)
         } catch {
-            print("Failed to save shared timer state: \(error.localizedDescription)")
+            Logger.appGroup.error("Failed to save shared timer state: \(error.localizedDescription)")
         }
     }
 
@@ -91,4 +88,8 @@ enum AppGroup {
 
         return state
     }
+}
+
+extension Logger {
+    static let appGroup = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.ro.app", category: "AppGroup")
 }

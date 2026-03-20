@@ -5,9 +5,14 @@ import Foundation
 @MainActor
 struct StatisticsViewModelTests {
 
-    private func makeSUT() -> (vm: StatisticsViewModel, repo: MockSessionRepository) {
-        let vm = StatisticsViewModel()
+    private func makeSUT(
+        sessions: [MockFocusSessionData] = [],
+        shouldThrow: Bool = false
+    ) -> (vm: StatisticsViewModel, repo: MockSessionRepository) {
         let repo = MockSessionRepository()
+        repo.sessionsToReturn = sessions
+        repo.shouldThrow = shouldThrow
+        let vm = StatisticsViewModel(repository: repo)
         return (vm, repo)
     }
 
@@ -36,7 +41,7 @@ struct StatisticsViewModelTests {
 
     @Test func emptyRepositoryReturnsZeros() {
         let (vm, repo) = makeSUT()
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.todayMinutes == 0)
         #expect(vm.todaySessions == 0)
         #expect(vm.currentStreak == 0)
@@ -53,12 +58,12 @@ struct StatisticsViewModelTests {
 
         // First load with data
         repo.sessionsToReturn = [makeSession()]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.todaySessions > 0)
 
         // Then fail
         repo.shouldThrow = true
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.todayMinutes == 0)
         #expect(vm.todaySessions == 0)
         #expect(vm.currentStreak == 0)
@@ -74,7 +79,7 @@ struct StatisticsViewModelTests {
             makeSession(durationMinutes: 30, daysAgo: 0),
             makeSession(durationMinutes: 25, daysAgo: 1),
         ]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.todaySessions == 2)
         #expect(vm.todayMinutes == 55)
     }
@@ -85,7 +90,7 @@ struct StatisticsViewModelTests {
             makeSession(mode: .focus, durationMinutes: 25, daysAgo: 0),
             makeSession(mode: .short, durationMinutes: 5, daysAgo: 0),
         ]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.todaySessions == 1)
         #expect(vm.todayMinutes == 25)
     }
@@ -95,7 +100,7 @@ struct StatisticsViewModelTests {
     @Test func weekBarsHasSevenItems() {
         let (vm, repo) = makeSUT()
         repo.sessionsToReturn = [makeSession()]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.weekBars.count == 7)
     }
 
@@ -105,7 +110,7 @@ struct StatisticsViewModelTests {
             makeSession(durationMinutes: 25, daysAgo: 0),
             makeSession(durationMinutes: 30, daysAgo: 0),
         ]
-        vm.load(repository: repo)
+        vm.load()
         let todayBar = vm.weekBars.last
         #expect(todayBar?.minutes == 55)
     }
@@ -115,7 +120,7 @@ struct StatisticsViewModelTests {
     @Test func singleDayStreak() {
         let (vm, repo) = makeSUT()
         repo.sessionsToReturn = [makeSession(daysAgo: 0)]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.currentStreak == 1)
         #expect(vm.longestStreak == 1)
     }
@@ -127,7 +132,7 @@ struct StatisticsViewModelTests {
             makeSession(daysAgo: 1),
             makeSession(daysAgo: 2),
         ]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.currentStreak == 3)
         #expect(vm.longestStreak == 3)
     }
@@ -140,7 +145,7 @@ struct StatisticsViewModelTests {
             makeSession(daysAgo: 2),
             makeSession(daysAgo: 3),
         ]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.currentStreak == 1)
         #expect(vm.longestStreak == 2)
     }
@@ -151,7 +156,7 @@ struct StatisticsViewModelTests {
             makeSession(daysAgo: 1),
             makeSession(daysAgo: 2),
         ]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.currentStreak == 2)
     }
 
@@ -160,7 +165,7 @@ struct StatisticsViewModelTests {
         repo.sessionsToReturn = [
             makeSession(daysAgo: 5),
         ]
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.currentStreak == 0)
     }
 
@@ -171,7 +176,7 @@ struct StatisticsViewModelTests {
         repo.sessionsToReturn = (0..<15).map { i in
             makeSession(daysAgo: i)
         }
-        vm.load(repository: repo)
+        vm.load()
         #expect(vm.recentSessions.count == 10)
     }
 }

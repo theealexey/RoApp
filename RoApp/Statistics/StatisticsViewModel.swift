@@ -4,6 +4,8 @@ import Foundation
 @MainActor @Observable
 final class StatisticsViewModel {
 
+    private let repository: SessionRepositoryProtocol
+
     private(set) var todayMinutes: Int  = 0
     private(set) var todaySessions: Int = 0
     private(set) var currentStreak: Int = 0
@@ -11,7 +13,11 @@ final class StatisticsViewModel {
     private(set) var weekBars: [DayBar] = []
     private(set) var recentSessions: [FocusSession] = []
 
-    func load(repository: SessionRepositoryProtocol) {
+    init(repository: SessionRepositoryProtocol) {
+        self.repository = repository
+    }
+
+    func load() {
         guard let all = try? repository.fetchAll() else {
             todayMinutes = 0
             todaySessions = 0

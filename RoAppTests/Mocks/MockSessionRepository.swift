@@ -17,16 +17,6 @@ final class MockSessionRepository: SessionRepositoryProtocol {
         return sessionsToReturn.map { $0.toFocusSession() }
     }
 
-    func totalFocusTime() throws -> TimeInterval {
-        try fetchAll()
-            .filter { $0.mode == .focus }
-            .reduce(0) { $0 + $1.duration }
-    }
-
-    func sessionsToday() throws -> [FocusSession] {
-        let start = Calendar.current.startOfDay(for: Date())
-        return try fetchAll().filter { $0.completedAt >= start }
-    }
 }
 
 struct MockFocusSessionData {
