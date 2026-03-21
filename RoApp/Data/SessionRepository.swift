@@ -2,7 +2,7 @@ import SwiftData
 import Foundation
 
 protocol SessionRepositoryProtocol {
-    func save(mode: TimerMode, duration: TimeInterval) throws
+    func save(mode: TimerMode, duration: TimeInterval, tag: SessionTag) throws
     func fetchAll() throws -> [FocusSession]
 }
 
@@ -14,8 +14,8 @@ final class SessionRepository: SessionRepositoryProtocol {
         self.context = context
     }
 
-    func save(mode: TimerMode, duration: TimeInterval) throws {
-        let session = FocusSession(mode: mode, duration: duration)
+    func save(mode: TimerMode, duration: TimeInterval, tag: SessionTag) throws {
+        let session = FocusSession(mode: mode, duration: duration, tag: tag)
         context.insert(session)
         try context.save()
     }

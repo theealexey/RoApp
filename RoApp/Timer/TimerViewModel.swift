@@ -12,12 +12,14 @@ protocol TimerViewModelProtocol: AnyObject {
     var formattedTime: String { get }
     var isRunning: Bool { get }
     var currentBaseDurationMinutes: Int { get }
+    var selectedTag: SessionTag { get }
 
     func start()
     func pause()
     func reset()
     func skipToNextMode()
     func select(mode: TimerMode)
+    func select(tag: SessionTag)
     func setCustomDuration(minutes: Int)
 }
 
@@ -30,6 +32,7 @@ final class TimerViewModel: TimerViewModelProtocol {
     private(set) var mode: TimerMode = .focus
     private(set) var state: TimerState = .idle
     private(set) var timeRemaining: TimeInterval
+    private(set) var selectedTag: SessionTag = .none
 
     private var sessionStartDuration: TimeInterval
     private var endDate: Date?
@@ -176,6 +179,11 @@ final class TimerViewModel: TimerViewModelProtocol {
         haptics.tap()
     }
 
+    func select(tag: SessionTag) {
+        selectedTag = tag
+        haptics.tap()
+    }
+
     func setCustomDuration(minutes: Int) {
         guard state == .idle || state == .paused else { return }
 
@@ -246,7 +254,7 @@ final class TimerViewModel: TimerViewModelProtocol {
 
     private func saveSession(mode: TimerMode, duration: TimeInterval) {
         do {
-            try repository.save(mode: mode, duration: duration)
+            try repository.save(mode: mode, duration: duration, tag: selectedTag)
         } catch {
             Logger.timer.error("Failed to save session: \(error.localizedDescription)")
         }
@@ -258,7 +266,8 @@ final class TimerViewModel: TimerViewModelProtocol {
             timeRemaining: timeRemaining,
             totalDuration: sessionStartDuration,
             modeRaw: mode.rawValue,
-            endDate: endDate
+            endDate: endDate,
+            tagRaw: selectedTag == .none ? nil : selectedTag.rawValue
         )
         widgetSync.sync(sharedState)
     }

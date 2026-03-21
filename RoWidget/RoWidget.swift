@@ -198,7 +198,8 @@ struct RoWidgetBundle: WidgetBundle {
             timeRemaining: 18 * 60,
             totalDuration: 25 * 60,
             modeRaw: "focus",
-            endDate: Date().addingTimeInterval(18 * 60)
+            endDate: Date().addingTimeInterval(18 * 60),
+            tagRaw: nil
         )
     )
 }

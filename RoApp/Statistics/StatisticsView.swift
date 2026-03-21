@@ -15,6 +15,7 @@ struct StatisticsView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 28) {
                     header
+                    tagFilterRow
                     todayRow
                     streakRow
                     weekChart
@@ -45,6 +46,29 @@ struct StatisticsView: View {
             .buttonStyle(.plain)
         }
         .padding(.top, 8)
+    }
+
+    private var tagFilterRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                TagFilterChip(
+                    label: String(localized: "stats.filter.all", defaultValue: "All"),
+                    isSelected: vm.selectedTagFilter == nil
+                ) {
+                    withAnimation(RoTheme.Animation.standard) { vm.filterByTag(nil) }
+                }
+
+                ForEach(SessionTag.selectable) { tag in
+                    TagFilterChip(
+                        label: tag.label,
+                        color: tag.color,
+                        isSelected: vm.selectedTagFilter == tag
+                    ) {
+                        withAnimation(RoTheme.Animation.standard) { vm.filterByTag(tag) }
+                    }
+                }
+            }
+        }
     }
 
     private var todayRow: some View {
@@ -138,11 +162,14 @@ struct StatisticsView: View {
     }
 
     private var emptyState: some View {
-        Text(LocalizedStringKey("stats.empty"))
-            .font(.system(size: 14, weight: .light))
-            .foregroundStyle(RoTheme.Colors.textGhost)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 24)
+        VStack(spacing: 12) {
+            EmptyStateIllustration(color: RoTheme.Colors.textGhost)
+            Text(LocalizedStringKey("stats.empty"))
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(RoTheme.Colors.textGhost)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
     }
 }
 
@@ -180,12 +207,37 @@ private struct StatCard: View {
 private struct SessionRow: View {
     let session: FocusSession
 
+    private var modeColor: Color {
+        switch session.mode {
+        case .focus: RoTheme.Colors.accent
+        case .short: RoTheme.Colors.success
+        case .long:  RoTheme.Colors.success.opacity(0.7)
+        }
+    }
+
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(modeColor)
+                .frame(width: 3, height: 28)
+
             VStack(alignment: .leading, spacing: 2) {
-                Text(session.mode.label)
-                    .font(.system(size: 14, weight: .light))
-                    .foregroundStyle(RoTheme.Colors.textPrimary)
+                HStack(spacing: 6) {
+                    Text(session.mode.label)
+                        .font(.system(size: 14, weight: .light))
+                        .foregroundStyle(RoTheme.Colors.textPrimary)
+
+                    if session.tag != .none {
+                        Text(session.tag.label)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(session.tag.color)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule().fill(session.tag.color.opacity(0.12))
+                            )
+                    }
+                }
                 Text(session.completedAt.formatted(.relative(presentation: .named)))
                     .font(.system(size: 11, weight: .light))
                     .foregroundStyle(RoTheme.Colors.textTertiary)
@@ -202,11 +254,42 @@ private struct SessionRow: View {
     }
 }
 
+// MARK: - Tag Filter Chip
+
+private struct TagFilterChip: View {
+    let label: String
+    var color: Color = RoTheme.Colors.accent
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.system(size: 12, weight: isSelected ? .medium : .regular))
+                .foregroundStyle(isSelected ? color : RoTheme.Colors.textTertiary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? color.opacity(0.12) : Color.clear)
+                        .overlay(
+                            Capsule().strokeBorder(
+                                isSelected ? color.opacity(0.3) : RoTheme.Colors.borderSubtle.opacity(0.6),
+                                lineWidth: 0.5
+                            )
+                        )
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
 #Preview {
     StatisticsView(repository: PreviewSessionRepository())
 }
 
 private final class PreviewSessionRepository: SessionRepositoryProtocol {
-    func save(mode: TimerMode, duration: TimeInterval) throws {}
+    func save(mode: TimerMode, duration: TimeInterval, tag: SessionTag) throws {}
     func fetchAll() throws -> [FocusSession] { [] }
 }

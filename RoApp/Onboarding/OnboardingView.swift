@@ -2,7 +2,7 @@ import SwiftUI
 
 private struct OnboardingPage: Identifiable {
     let id: Int
-    let symbol: String
+    let illustration: AnyView
     let title: LocalizedStringKey
     let body: LocalizedStringKey
 }
@@ -12,32 +12,35 @@ struct OnboardingView: View {
 
     @State private var currentPage = 0
 
-    private let pages: [OnboardingPage] = [
-        OnboardingPage(
-            id: 0,
-            symbol: "circle",
-            title: "onboarding.title.0",
-            body: "onboarding.body.0"
-        ),
-        OnboardingPage(
-            id: 1,
-            symbol: "timer",
-            title: "onboarding.title.1",
-            body: "onboarding.body.1"
-        ),
-        OnboardingPage(
-            id: 2,
-            symbol: "rectangle.stack",
-            title: "onboarding.title.2",
-            body: "onboarding.body.2"
-        ),
-        OnboardingPage(
-            id: 3,
-            symbol: "chart.bar",
-            title: "onboarding.title.3",
-            body: "onboarding.body.3"
-        )
-    ]
+    private var pages: [OnboardingPage] {
+        let color = RoTheme.Colors.accent
+        return [
+            OnboardingPage(
+                id: 0,
+                illustration: AnyView(FocusCircleIllustration(color: color)),
+                title: "onboarding.title.0",
+                body: "onboarding.body.0"
+            ),
+            OnboardingPage(
+                id: 1,
+                illustration: AnyView(TimerFlowIllustration(color: color)),
+                title: "onboarding.title.1",
+                body: "onboarding.body.1"
+            ),
+            OnboardingPage(
+                id: 2,
+                illustration: AnyView(StackLayersIllustration(color: color)),
+                title: "onboarding.title.2",
+                body: "onboarding.body.2"
+            ),
+            OnboardingPage(
+                id: 3,
+                illustration: AnyView(GrowthArrowIllustration(color: color)),
+                title: "onboarding.title.3",
+                body: "onboarding.body.3"
+            )
+        ]
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -142,14 +145,12 @@ private struct PageView: View {
 
             ZStack {
                 Circle()
-                    .fill(RoTheme.Colors.accent.opacity(0.08))
-                    .frame(width: 120, height: 120)
-                    .blur(radius: 20)
+                    .fill(RoTheme.Colors.accent.opacity(0.06))
+                    .frame(width: 160, height: 160)
+                    .blur(radius: 30)
                     .allowsHitTesting(false)
 
-                Image(systemName: page.symbol)
-                    .font(.system(size: 44, weight: .thin))
-                    .foregroundStyle(RoTheme.Colors.accent.opacity(0.9))
+                page.illustration
                     .allowsHitTesting(false)
             }
             .accessibilityHidden(true)

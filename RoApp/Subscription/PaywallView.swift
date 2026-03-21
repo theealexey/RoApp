@@ -53,15 +53,27 @@ struct PaywallView: View {
     }
 
     private var headerView: some View {
-        VStack(spacing: 14) {
-            Text(LocalizedStringKey("paywall.title"))
-                .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundStyle(RoTheme.Colors.textPrimary)
+        VStack(spacing: 20) {
+            ZStack {
+                Circle()
+                    .fill(RoTheme.Colors.accent.opacity(0.06))
+                    .frame(width: 180, height: 180)
+                    .blur(radius: 30)
 
-            Text(LocalizedStringKey("paywall.subtitle"))
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(RoTheme.Colors.textSecondary)
-                .multilineTextAlignment(.center)
+                PaywallHeroIllustration(color: RoTheme.Colors.accent)
+            }
+            .accessibilityHidden(true)
+
+            VStack(spacing: 10) {
+                Text(LocalizedStringKey("paywall.title"))
+                    .font(.system(size: 28, weight: .thin))
+                    .foregroundStyle(RoTheme.Colors.textPrimary)
+
+                Text(LocalizedStringKey("paywall.subtitle"))
+                    .font(.system(size: 15, weight: .light))
+                    .foregroundStyle(RoTheme.Colors.textSecondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .padding(.top, 12)
     }

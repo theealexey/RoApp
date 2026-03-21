@@ -7,6 +7,23 @@ struct SharedTimerState: Codable, Sendable {
     let totalDuration: TimeInterval
     let modeRaw: String
     let endDate: Date?
+    let tagRaw: String?
+
+    init(
+        isRunning: Bool,
+        timeRemaining: TimeInterval,
+        totalDuration: TimeInterval,
+        modeRaw: String,
+        endDate: Date?,
+        tagRaw: String? = nil
+    ) {
+        self.isRunning = isRunning
+        self.timeRemaining = timeRemaining
+        self.totalDuration = totalDuration
+        self.modeRaw = modeRaw
+        self.endDate = endDate
+        self.tagRaw = tagRaw
+    }
 
     static let defaultDuration: TimeInterval = 25 * 60
     static let defaultModeRaw = "focus"
@@ -16,7 +33,8 @@ struct SharedTimerState: Codable, Sendable {
         timeRemaining: defaultDuration,
         totalDuration: defaultDuration,
         modeRaw: defaultModeRaw,
-        endDate: nil
+        endDate: nil,
+        tagRaw: nil
     )
 
     var progress: Double {

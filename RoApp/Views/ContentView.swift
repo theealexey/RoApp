@@ -23,6 +23,12 @@ struct ContentView: View {
                 )
 
                 ModePickerView(vm: vm)
+
+                if vm.mode == .focus {
+                    TagPickerView(vm: vm)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+
                 TimerRingView(vm: vm)
                 ControlsView(vm: vm)
             }
@@ -48,9 +54,9 @@ private struct TopBarView: View {
     var body: some View {
         HStack {
             Text("ro")
-                .font(RoTheme.Typography.brand)
-                .foregroundStyle(RoTheme.Colors.textGhost)
-                .tracking(6)
+                .font(.system(size: 18, weight: .ultraLight))
+                .foregroundStyle(RoTheme.Colors.textTertiary)
+                .tracking(8)
 
             Spacer()
 
@@ -141,6 +147,65 @@ private struct ModeChip: View {
                             )
                         )
                 )
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+// MARK: - Tag Picker
+
+private struct TagPickerView: View {
+    let vm: TimerViewModel
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(SessionTag.selectable) { tag in
+                    TagChip(
+                        tag: tag,
+                        isSelected: vm.selectedTag == tag
+                    ) {
+                        withAnimation(RoTheme.Animation.standard) {
+                            vm.select(tag: vm.selectedTag == tag ? .none : tag)
+                        }
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct TagChip: View {
+    let tag: SessionTag
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Image(systemName: tag.icon)
+                    .font(.system(size: 10, weight: .medium))
+
+                Text(tag.label)
+                    .font(.system(size: 12, weight: isSelected ? .medium : .regular))
+            }
+            .foregroundStyle(
+                isSelected ? tag.color : RoTheme.Colors.textTertiary
+            )
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(
+                Capsule()
+                    .fill(isSelected ? tag.color.opacity(0.12) : Color.clear)
+                    .overlay(
+                        Capsule().strokeBorder(
+                            isSelected ? tag.color.opacity(0.3) : RoTheme.Colors.borderSubtle.opacity(0.6),
+                            lineWidth: 0.5
+                        )
+                    )
+            )
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -426,28 +491,27 @@ private struct PlayPauseButton: View {
         } label: {
             ZStack {
                 Circle()
-                    .fill(vm.state.accentColor.opacity(0.18))
+                    .fill(vm.state.accentColor.opacity(0.06))
                     .frame(
                         width: RoTheme.Layout.playButtonOuter,
                         height: RoTheme.Layout.playButtonOuter
                     )
-                    .blur(radius: 14)
+                    .blur(radius: 10)
 
                 Circle()
-                    .fill(vm.state.accentColor)
+                    .strokeBorder(vm.state.accentColor.opacity(0.6), lineWidth: 2)
                     .frame(
                         width: RoTheme.Layout.playButtonInner,
                         height: RoTheme.Layout.playButtonInner
                     )
-                    .overlay(
-                        Circle()
-                            .strokeBorder(RoTheme.Colors.borderSubtle, lineWidth: 0.5)
+                    .background(
+                        Circle().fill(vm.state.accentColor.opacity(0.08))
                     )
                     .scaleEffect(isPressed ? 0.92 : 1.0)
 
                 Image(systemName: vm.isRunning ? "pause" : "play.fill")
                     .font(RoTheme.Typography.playIcon)
-                    .foregroundStyle(RoTheme.Colors.textPrimary)
+                    .foregroundStyle(vm.state.accentColor)
                     .contentTransition(.symbolEffect(.replace))
                     .offset(x: vm.isRunning ? 0 : 2)
             }
@@ -477,6 +541,6 @@ private struct PlayPauseButton: View {
 }
 
 private final class PreviewSessionRepository: SessionRepositoryProtocol {
-    func save(mode: TimerMode, duration: TimeInterval) throws {}
+    func save(mode: TimerMode, duration: TimeInterval, tag: SessionTag) throws {}
     func fetchAll() throws -> [FocusSession] { [] }
 }

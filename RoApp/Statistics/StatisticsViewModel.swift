@@ -12,6 +12,9 @@ final class StatisticsViewModel {
     private(set) var longestStreak: Int = 0
     private(set) var weekBars: [DayBar] = []
     private(set) var recentSessions: [FocusSession] = []
+    var selectedTagFilter: SessionTag?
+
+    private var allSessions: [FocusSession] = []
 
     init(repository: SessionRepositoryProtocol) {
         self.repository = repository
@@ -25,19 +28,39 @@ final class StatisticsViewModel {
             longestStreak = 0
             weekBars = []
             recentSessions = []
+            allSessions = []
             return
         }
 
-        let focus = all.filter { $0.mode == .focus }
+        allSessions = all
+        recalculate()
+    }
+
+    func filterByTag(_ tag: SessionTag?) {
+        selectedTagFilter = tag
+        recalculate()
+    }
+
+    private func recalculate() {
+        let focus = allSessions.filter { $0.mode == .focus }
+        let filtered = selectedTagFilter.map { tag in
+            focus.filter { $0.tag == tag }
+        } ?? focus
+
         let todayStart = Calendar.current.startOfDay(for: Date())
-        let todayFocus = focus.filter { $0.completedAt >= todayStart }
+        let todayFocus = filtered.filter { $0.completedAt >= todayStart }
 
         todayMinutes  = todayFocus.reduce(0) { $0 + $1.durationMinutes }
         todaySessions = todayFocus.count
-        recentSessions = Array(all.prefix(10))
-        weekBars = buildWeekBars(from: focus)
 
-        let streaks   = computeStreaks(from: focus)
+        let recentFiltered = selectedTagFilter.map { tag in
+            allSessions.filter { $0.tag == tag }
+        } ?? allSessions
+        recentSessions = Array(recentFiltered.prefix(10))
+
+        weekBars = buildWeekBars(from: filtered)
+
+        let streaks   = computeStreaks(from: filtered)
         currentStreak = streaks.current
         longestStreak = streaks.longest
     }
