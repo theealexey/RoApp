@@ -61,6 +61,7 @@
 		8A5077CF2F68559100AF88FF /* Exceptions for "RoApp" folder in "RoWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Shared/AppGroup.swift,
 				Shared/SharedTimerState.swift,
 			);
 			target = 8A5077B02F6852FE00AF88FF /* RoWidgetExtension */;

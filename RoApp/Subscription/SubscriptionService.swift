@@ -8,8 +8,21 @@ enum RoProduct: String, CaseIterable {
 }
 
 @MainActor
+protocol SubscriptionServiceProtocol: AnyObject {
+    var products: [Product] { get }
+    var isLoading: Bool { get }
+    var isPro: Bool { get }
+    var purchaseErrorMessage: String? { get }
+
+    func loadProducts() async
+    func purchase(_ product: Product) async
+    func restorePurchases() async
+    func refresh() async
+}
+
+@MainActor
 @Observable
-final class SubscriptionService {
+final class SubscriptionService: SubscriptionServiceProtocol {
     private(set) var products: [Product] = []
     private(set) var isLoading = false
     private(set) var isPro = false

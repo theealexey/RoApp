@@ -16,13 +16,7 @@ final class FocusSession {
     }
 
     var mode: TimerMode {
-        // Support both legacy Russian rawValues and new English ones
-        switch modeRaw {
-        case "Фокус":   return .focus
-        case "Перерыв": return .short
-        case "Длинный": return .long
-        default:        return TimerMode(rawValue: modeRaw) ?? .focus
-        }
+        TimerMode(resolving: modeRaw)
     }
 
     var durationMinutes: Int { Int(duration / 60) }
