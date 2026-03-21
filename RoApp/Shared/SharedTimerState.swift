@@ -29,8 +29,7 @@ struct SharedTimerState: Codable, Sendable {
     }
 
     var formattedTime: String {
-        let totalSeconds = max(0, Int(ceil(liveTimeRemaining)))
-        return String(format: "%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+        TimeFormatting.format(seconds: liveTimeRemaining)
     }
 
     var modeLabelEN: String {

@@ -63,6 +63,7 @@
 			membershipExceptions = (
 				Shared/AppGroup.swift,
 				Shared/SharedTimerState.swift,
+				Shared/TimeFormatting.swift,
 			);
 			target = 8A5077B02F6852FE00AF88FF /* RoWidgetExtension */;
 		};

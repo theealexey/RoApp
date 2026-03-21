@@ -19,8 +19,7 @@ struct RoTimerAttributes: ActivityAttributes {
         }
 
         var formattedTime: String {
-            let s = max(0, Int(ceil(liveTimeRemaining)))
-            return String(format: "%02d:%02d", s / 60, s % 60)
+            TimeFormatting.format(seconds: liveTimeRemaining)
         }
 
         var liveTimeRemaining: TimeInterval {
